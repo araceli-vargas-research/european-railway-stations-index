@@ -274,7 +274,8 @@ if total_weight > 0:
         weighted["personalized_score"] += normalized * weights[label]
     weighted["personalized_score"] = weighted["personalized_score"] / total_weight * 100
 
-personal_top = weighted.sort_values("personalized_score", ascending=False).head(10)
+personal_top = weighted.sort_values("personalized_score", ascending=False).head(10).copy()
+personal_top["match_rank"] = range(1, len(personal_top) + 1)
 left, right = st.columns([0.36, 0.64], gap="large")
 with left:
     st.markdown("### Your top matches")
@@ -291,9 +292,37 @@ with right:
         orientation="h",
         color="personalized_score",
         color_continuous_scale=[COOL_MIST, PRIMARY_ORANGE, BRICK_CORAL],
+        custom_data=["match_rank", "station", "country", "personalized_score"],
         labels={"personalized_score": "Personalized match", "station": ""},
     )
-    fig.update_layout(height=430, coloraxis_showscale=False, margin=dict(l=10, r=10, t=10, b=10), xaxis_range=[0, 100])
+
+    fig.update_traces(
+        marker_line_color="#FFFFFF",
+        marker_line_width=1.2,
+        hovertemplate=(
+            "<b>#%{customdata[0]} · %{customdata[1]}</b><br>"
+            "%{customdata[2]}<br><br>"
+            "Personalized match: <b>%{customdata[3]:.1f}</b>"
+            "<extra></extra>"
+        ),
+    )
+
+    fig.update_layout(
+        height=430,
+        coloraxis_showscale=False,
+        margin=dict(l=10, r=10, t=10, b=10),
+        xaxis_range=[0, 100],
+        hoverlabel=dict(
+            bgcolor=PRIMARY_NAVY,
+            bordercolor=PRIMARY_ORANGE,
+            font=dict(
+                color="#FFFFFF",
+                family="Montserrat, Arial, sans-serif",
+                size=13,
+            ),
+            align="left",
+        ),
+    )
     st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
 
 st.caption("Personalized results are exploratory and do not alter the official European Railway Station Index ranking.")
@@ -369,12 +398,12 @@ with method_left:
     st.markdown(
         '''<div class="method-card method-freshness">
           <div class="section-kicker compact">DATA FRESHNESS</div>
-          <h3>Data timing at a glance</h3>
-          <p class="method-intro">Not every figure in the 2026 index was measured during calendar 2026.</p>
+          <h3>Latest available data</h3>
+          <p class="method-intro">The index uses the latest data available for each indicator.</p>
           <div class="freshness-list">
-            <div><span>Current 2026</span><p>Waiting-time and delay observations.</p></div>
-            <div><span>Latest available</span><p>Passenger-volume figure used for inclusion.</p></div>
-            <div><span>Historical</span><p>Values retained from prior index vintages.</p></div>
+            <div><span>Update schedules</span><p>Many operators do not publish new figures every year.</p></div>
+            <div><span>Reporting standards</span><p>Definitions and methods can differ across operators and countries.</p></div>
+            <div><span>Source transparency</span><p>The dashboard identifies source years and methodology wherever possible.</p></div>
           </div>
         </div>''',
         unsafe_allow_html=True,
