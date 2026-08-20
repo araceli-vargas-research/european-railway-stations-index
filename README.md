@@ -1,10 +1,9 @@
 # European Railway Station Index 2026 — Complete Local Starter
 
-This package now contains:
+This package contains:
 
 - the **actual 2026 Excel research workbook** in `data/raw/`;
 - a real `scripts/build_2026_data.py` data-cleaning script;
-- non-empty Streamlit component modules;
 - `app.py`;
 - styles and configuration;
 - a processed-data workflow.
