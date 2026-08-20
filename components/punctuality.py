@@ -16,7 +16,7 @@ def render_punctuality(df):
         y="station",
         orientation="h",
         labels={"delay_percent_2026": "Delayed trains (%)", "station": ""},
-        title="Most punctual stations",
+        title="Most punctual: fewest delayed trains",
     )
     fig.update_traces(
         marker_color=DEEP_TEAL,
@@ -42,7 +42,7 @@ def render_punctuality(df):
         y="station",
         orientation="h",
         labels={"delay_percent_2026": "Delayed trains (%)", "station": ""},
-        title="Highest delay rates",
+        title="Least punctual: most delayed trains",
     )
     fig.update_traces(
         marker_color=BRICK_CORAL,
