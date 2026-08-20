@@ -1,12 +1,29 @@
 __pycache__/
 *.py[cod]
+
 .venv/
 venv/
 .env
+.env.*
+!.env.example
+
 .DS_Store
+.vscode/
+.idea/
+
 .streamlit/secrets.toml
 
-# IMPORTANT: raw research workbook is included in this local starter ZIP,
-# but Git will ignore it so it is not accidentally published.
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.log
+*.zip
+
 data/raw/*
 !data/raw/.gitkeep
+
+# Local development notes
+WHAT_CHANGED.md
+BRAND_IMPLEMENTATION.md
