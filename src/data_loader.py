@@ -12,6 +12,14 @@ def load_stations():
         )
 
     df = pd.read_csv(PROCESSED_DATA)
+    for c in {"country", "city", "station"}:
+        df[c] = (
+            df[c]
+            .astype("string")
+            .str.strip()
+            .str.replace(r"\s+", " ", regex=True)
+        )
+
     numeric_cols = [c for c in df.columns if c not in {"country", "city", "station"}]
     for c in numeric_cols:
         df[c] = pd.to_numeric(df[c], errors="coerce")

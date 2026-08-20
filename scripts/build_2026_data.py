@@ -52,6 +52,15 @@ def main():
         for new_name, pos in source_positions.items()
     })
 
+    # Remove invisible leading/trailing whitespace so locations group correctly.
+    for col in {"country", "city", "station"}:
+        clean[col] = (
+            clean[col]
+            .astype("string")
+            .str.strip()
+            .str.replace(r"\s+", " ", regex=True)
+        )
+
     # Confirmed normalization from Emil:
     # Frankfurt Main Hbf's 2025 value is 164.25 million, not 164,250 million.
     frankfurt = clean["station"].astype(str).eq("Frankfurt Main Hbf")

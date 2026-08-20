@@ -173,7 +173,7 @@ st.markdown(
       <div class="stat-card">
         <div class="stat-label">Stations ranked</div>
         <div class="stat-value big">{len(df)}</div>
-        <div class="stat-sub">major European hubs</div>
+        <div class="stat-sub">Major European hubs</div>
       </div>
 
       <div class="stat-card">
@@ -311,8 +311,15 @@ section(
     "Different countries, different passenger experiences",
     "Country averages provide context for broader patterns, but always reflect the set of stations included in the index rather than an entire national railway system.",
 )
+country_source = df.copy()
+country_source["country"] = (
+    country_source["country"]
+    .astype("string")
+    .str.strip()
+    .str.replace(r"\s+", " ", regex=True)
+)
 country = (
-    df.groupby("country", as_index=False)
+    country_source.groupby("country", as_index=False)
     .agg(stations=("station", "count"), avg_score=("total_score", "mean"), avg_delay=("delay_percent_2026", "mean"), avg_wait=("wait_minutes_2026", "mean"))
 )
 fig = px.scatter(
@@ -323,11 +330,32 @@ fig = px.scatter(
     text="country",
     color="avg_wait",
     color_continuous_scale=[COOL_MIST, PRIMARY_ORANGE, BRICK_CORAL],
-    hover_data=["avg_wait", "stations"],
+    custom_data=["country", "avg_delay", "avg_score", "stations", "avg_wait"],
     labels={"avg_delay": "Average delayed trains (%)", "avg_score": "Average station score", "avg_wait": "Avg. wait"},
 )
-fig.update_traces(textposition="top center")
-fig.update_layout(height=560, margin=dict(l=10, r=10, t=20, b=10), coloraxis_colorbar=dict(title="Avg. wait"))
+fig.update_traces(
+    textposition="top center",
+    marker=dict(line=dict(color="#FFFFFF", width=1.4)),
+    hovertemplate=(
+        "<b>%{customdata[0]}</b><br><br>"
+        "Delayed trains: <b>%{customdata[1]:.1f}%</b><br>"
+        "Station score: <b>%{customdata[2]:.1f}</b><br>"
+        "Stations in index: <b>%{customdata[3]:.0f}</b><br>"
+        "Average wait: <b>%{customdata[4]:.1f} min</b>"
+        "<extra></extra>"
+    ),
+)
+fig.update_layout(
+    height=560,
+    margin=dict(l=10, r=10, t=20, b=10),
+    hoverlabel=dict(
+        bgcolor=PRIMARY_NAVY,
+        bordercolor=PRIMARY_ORANGE,
+        font=dict(color="#FFFFFF", family="Montserrat, Arial, sans-serif", size=13),
+        align="left",
+    ),
+    coloraxis_colorbar=dict(title="Avg. wait<br>(minutes)", tickformat=".0f"),
+)
 st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
 st.markdown('<div id="method"></div>', unsafe_allow_html=True)
@@ -339,30 +367,63 @@ section(
 method_left, method_right = st.columns([0.42, 0.58], gap="large", vertical_alignment="top")
 with method_left:
     st.markdown(
-        '''<div class="method-card"><div class="section-kicker compact">DATA FRESHNESS</div><h3>2026 does not mean every number was measured in calendar 2026.</h3><p><b>Current 2026:</b> working waiting-time and delay observations.</p><p><b>Latest available:</b> passenger-volume figure used for the 2026 index.</p><p><b>Historical:</b> values retained from prior index vintages.</p></div>''',
+        '''<div class="method-card method-freshness">
+          <div class="section-kicker compact">DATA FRESHNESS</div>
+          <h3>Data timing at a glance</h3>
+          <p class="method-intro">Not every figure in the 2026 index was measured during calendar 2026.</p>
+          <div class="freshness-list">
+            <div><span>Current 2026</span><p>Waiting-time and delay observations.</p></div>
+            <div><span>Latest available</span><p>Passenger-volume figure used for inclusion.</p></div>
+            <div><span>Historical</span><p>Values retained from prior index vintages.</p></div>
+          </div>
+        </div>''',
         unsafe_allow_html=True,
     )
 with method_right:
     st.markdown(
-        '''<div class="rail-accordion">
-        <details open><summary>Waiting times</summary><p>≤ 5 minutes = 10 points · > 5 and ≤ 10 minutes = 5 points · > 10 minutes = 0 points.</p></details>
-        <details><summary>Delayed trains</summary><p>≤ 10% = 15 points · > 10% and < 20% = 10 points · ≥ 20% and < 40% = 5 points · ≥ 40% = 0 points.</p></details>
-        <details><summary>Passenger volume</summary><p>Passenger volume determines which major stations are included. It is descriptive and does not itself award points.</p></details>
-        <details><summary>Cross-country comparability</summary><p>Definitions, reporting practices, and source years can differ across railway systems. The dashboard should therefore expose the timing and source context of individual measures wherever possible.</p></details>
+        '''<div class="rail-accordion method-accordion">
+        <details open>
+          <summary><span class="method-number">01</span>Waiting times</summary>
+          <div class="threshold-grid three">
+            <span><b>10 pts</b>≤ 5 min</span>
+            <span><b>5 pts</b>&gt; 5–10 min</span>
+            <span><b>0 pts</b>&gt; 10 min</span>
+          </div>
+        </details>
+        <details>
+          <summary><span class="method-number">02</span>Delayed trains</summary>
+          <div class="threshold-grid four">
+            <span><b>15 pts</b>≤ 10%</span>
+            <span><b>10 pts</b>&gt; 10–&lt; 20%</span>
+            <span><b>5 pts</b>≥ 20–&lt; 40%</span>
+            <span><b>0 pts</b>≥ 40%</span>
+          </div>
+        </details>
+        <details>
+          <summary><span class="method-number">03</span>Passenger volume</summary>
+          <p>Passenger volume determines which major stations are included. It is descriptive and does not itself award points.</p>
+        </details>
+        <details>
+          <summary><span class="method-number">04</span>Cross-country comparability</summary>
+          <p>Definitions, reporting practices, and source years can differ across railway systems. The dashboard exposes timing and source context wherever possible.</p>
+        </details>
+        </div>
+        <div class="report-callout">
+          <div class="report-callout-copy">
+            <span>PREVIOUS EDITION</span>
+            <strong>See the published 2025 methodology and rankings.</strong>
+          </div>
+          <a class="button primary report-link-button"
+             href="https://consumerchoicecenter.org/wp-content/uploads/2025/08/RSI2025.pdf"
+             target="_blank" rel="noopener noreferrer">
+            Read the report →
+          </a>
         </div>''',
         unsafe_allow_html=True,
     )
 
 st.markdown(
     """
-    <div class="report-link-wrap">
-      <a class="button primary report-link-button"
-         href="https://consumerchoicecenter.org/wp-content/uploads/2025/08/RSI2025.pdf"
-         target="_blank" rel="noopener noreferrer">
-        Read our 2025 report here →
-      </a>
-    </div>
-
     <footer>
       CONSUMER CHOICE CENTER
       <span>European Railway Station Index · 2026 working edition</span>
