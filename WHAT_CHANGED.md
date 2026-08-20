@@ -1,15 +1,10 @@
 # What changed from the branded prototype
 
-If your current project is already running, the only files you need to replace are:
 
 1. `app.py`
 2. `styles.css`
 
-Then optionally add the official logo as:
-
 3. `assets/ccc-logo.png`
-
-Everything else — the Excel workbook, processed CSV, build script, data loader, and current components — can stay exactly where it is.
 
 ## New in `app.py`
 - AV-style top navigation
