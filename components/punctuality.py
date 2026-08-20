@@ -34,7 +34,7 @@ def render_punctuality(df):
         xaxis=dict(showgrid=True, gridcolor="#E7ECF4", zeroline=False, title=""),
         yaxis=dict(showgrid=False, title=""),
     )
-    left.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+    left.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
 
     fig = px.bar(
         worst.sort_values("delay_percent_2026", ascending=True),
@@ -60,4 +60,4 @@ def render_punctuality(df):
         xaxis=dict(showgrid=True, gridcolor="#E7ECF4", zeroline=False, title=""),
         yaxis=dict(showgrid=False, title=""),
     )
-    right.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+    right.plotly_chart(fig, width="stretch", config={"displayModeBar": False})

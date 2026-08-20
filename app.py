@@ -106,7 +106,7 @@ st.markdown(
         <h1>Passenger convenience, station by station.</h1>
         <p>
           Compare major European railway stations across the things passengers experience directly:
-          <b>reliability, waiting times, accessibility, ticketing, amenities, connectivity, and consumer choice.</b>
+          <b>reliability, waiting times, accessibility, ticketing, amenities, connectivity, competition, and mobility options.</b>
         </p>
         <div class="hero-actions">
           <a class="button primary" href="#index">Explore the index →</a>
@@ -155,7 +155,7 @@ with about_right:
           <details><summary>How are stations selected?</summary><p>Major railway stations are selected using passenger volume. Passenger volume is descriptive and determines inclusion; it does not itself award points in the index.</p></details>
           <details><summary>Why give punctuality and waiting times special attention?</summary><p>They are among the most immediate parts of a passenger's experience. Delays can also cascade into crowding and strain ticketing, digital services, shops, restaurants, and other station infrastructure.</p></details>
           <details><summary>Are all figures from calendar year 2026?</summary><p>No. The index uses the latest data available for each indicator. Source years may vary because many operators do not publish annual updates, and reporting standards differ across operators and countries. Where possible, the dashboard identifies the relevant source year and methodology.</p></details>
-          <details><summary>How comparable are the data across countries?</summary><p>Reporting standards, definitions, and source years differ across jurisdictions. The final public version should expose source timing and methodology notes rather than hiding those differences.</p></details>
+          <details><summary>How comparable are the data across countries?</summary><p>Reporting standards, definitions, and source years differ across jurisdictions. The dashboard identifies source timing and methodology notes wherever possible so those differences remain visible.</p></details>
         </div>''',
         unsafe_allow_html=True,
     )
@@ -254,7 +254,7 @@ weight_map = {
     "Amenities": ["shops_score", "restaurants_score", "lounge_score"],
     "Connectivity": ["connections_score"],
     "Digital services": ["application_score", "wifi_score"],
-    "Consumer choice": ["competition_score", "ride_hailing_score"],
+    "Competition & mobility options": ["competition_score", "ride_hailing_score"],
 }
 
 slider_cols = st.columns(2)
@@ -294,7 +294,7 @@ with right:
         labels={"personalized_score": "Personalized match", "station": ""},
     )
     fig.update_layout(height=430, coloraxis_showscale=False, margin=dict(l=10, r=10, t=10, b=10), xaxis_range=[0, 100])
-    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
 
 st.caption("Personalized results are exploratory and do not alter the official European Railway Station Index ranking.")
 
@@ -356,13 +356,13 @@ fig.update_layout(
     ),
     coloraxis_colorbar=dict(title="Avg. wait<br>(minutes)", tickformat=".0f"),
 )
-st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
 
 st.markdown('<div id="method"></div>', unsafe_allow_html=True)
 section(
     "06 · METHODOLOGY",
     "Transparent by design",
-    "The working dashboard uses the 2026 research workbook for station-level values and the published 2025 methodology as the explanatory reference until the final 2026 edition is issued.",
+    "The dashboard uses the 2026 research workbook for station-level values and the published 2025 methodology as the explanatory reference until the final 2026 edition is issued.",
 )
 method_left, method_right = st.columns([0.42, 0.58], gap="large", vertical_alignment="top")
 with method_left:
@@ -385,18 +385,18 @@ with method_right:
         <details open>
           <summary><span class="method-number">01</span>Waiting times</summary>
           <div class="threshold-grid three">
-            <span><b>10 pts</b>≤ 5 min</span>
-            <span><b>5 pts</b>&gt; 5–10 min</span>
+            <span><b>10 pts</b>&le; 5 min</span>
+            <span><b>5 pts</b>&gt; 5 min and &le; 10 min</span>
             <span><b>0 pts</b>&gt; 10 min</span>
           </div>
         </details>
         <details>
           <summary><span class="method-number">02</span>Delayed trains</summary>
           <div class="threshold-grid four">
-            <span><b>15 pts</b>≤ 10%</span>
-            <span><b>10 pts</b>&gt; 10–&lt; 20%</span>
-            <span><b>5 pts</b>≥ 20–&lt; 40%</span>
-            <span><b>0 pts</b>≥ 40%</span>
+            <span><b>15 pts</b>&le; 10%</span>
+            <span><b>10 pts</b>&gt; 10% and &le; 20%</span>
+            <span><b>5 pts</b>&gt; 20% and &lt; 40%</span>
+            <span><b>0 pts</b>&ge; 40%</span>
           </div>
         </details>
         <details>

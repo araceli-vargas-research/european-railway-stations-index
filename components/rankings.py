@@ -76,7 +76,7 @@ def render_rankings_table(df):
     st.dataframe(
         styled,
         hide_index=True,
-        use_container_width=True,
+        width="stretch",
         height=460,
         column_config={
             "Rank": st.column_config.NumberColumn("Rank", width="small", format="%d"),

@@ -38,7 +38,13 @@ def render_station_explorer(df):
         "Points": [row[col] for col in SCORE_COMPONENTS.values()],
     }).sort_values("Points")
 
-    fig = px.bar(comp, x="Points", y="Criterion", orientation="h")
+    fig = px.bar(
+    comp,
+    x="Points",
+    y="Criterion",
+    orientation="h",
+    title=f"{selected} score breakdown",
+)
     fig.update_traces(
         marker_color=PRIMARY_ORANGE,
         marker_line_color="white",
@@ -55,4 +61,4 @@ def render_station_explorer(df):
         xaxis=dict(showgrid=True, gridcolor="#E7ECF4", zeroline=False, title=""),
         yaxis=dict(showgrid=False, title=""),
     )
-    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
